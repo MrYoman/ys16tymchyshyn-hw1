@@ -37,7 +37,7 @@ public class SeriesOfSinCosConcurrent {
                 = Executors.newFixedThreadPool(threadsCount);
         Future<Double>[] future = new Future[threadsCount];
 
-        double lengthOfInterval = N / threadsCount;
+        double lengthOfInterval = 2 * N / threadsCount;
 
         for (int i = 0; i < threadsCount; i++) {
             calculators[i] = new SeriesCalculator(

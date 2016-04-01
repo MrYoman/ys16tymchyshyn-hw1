@@ -34,7 +34,7 @@ public class SeriesOfSinCos {
         Thread[] threads = new Thread[threadsCount];
         SeriesCalculator[] calculators = new SeriesCalculator[threadsCount];
 
-        double lengthOfInterval = N / threadsCount;
+        double lengthOfInterval = 2 * N / threadsCount;
 
         calculators[0] = new SeriesCalculator(-N, -N + lengthOfInterval);
         for (int i = 0; i < threadsCount; i++) {
