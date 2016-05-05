@@ -6,10 +6,17 @@ import java.util.logging.Logger;
 
 public class MergeSort {
     
-    private static final int MIN_ARR_LEN_FOR_THREAD = 50;
+    private static final int MIN_ARR_LEN_FOR_THREAD = 5;
+    
+    private static final String INPUT_ARRAY_IS_NULL_MSG 
+                                            = "Input array can not be null.";
+    private static final String OUTPUT_ARRAY_IS_NULL_MSG 
+                                            = "Output array can not be null.";
+    private static final String OUTPUT_ARR_IS_SMALLER_THAN_INPUT_ARR_MSG 
+                = "Output array can not have smaller size than input array.";
     
     private class SortRunner implements Runnable {
-
+        
         private double[] inputArray;
         private int startPos;
         private int finPos;
@@ -150,9 +157,9 @@ public class MergeSort {
             int firstHalfLength = middle - startPos + 1;
             
             if (firstHalfLength > MIN_ARR_LEN_FOR_THREAD) {
-                SortRunner sortRunner1 = new SortRunner(inputArray, middle + 1, 
-                    finPos, output, 0);
-                SortRunner sortRunner2 = new SortRunner(inputArray, startPos, 
+                SortRunner sortRunner1 = new SortRunner(inputArray, startPos, 
+                    middle, output, 0);
+                SortRunner sortRunner2 = new SortRunner(inputArray, middle + 1, 
                     finPos, output, firstHalfLength);
                 
                 Thread thread1 = new Thread(sortRunner1);
@@ -165,8 +172,8 @@ public class MergeSort {
                 thread2.join();
             }
             else {
-                sort(inputArray, middle + 1, finPos, output, 0);
-                sort(inputArray, startPos, finPos, output, firstHalfLength);
+                sort(inputArray, startPos, middle, output, 0);
+                sort(inputArray, middle + 1, finPos, output, firstHalfLength);
             }
             
             merge(output, 0, firstHalfLength - 1, firstHalfLength, 
@@ -174,7 +181,25 @@ public class MergeSort {
         }
     }
     
-    public void mergeSort(double[] inputArray, double[] outputArray) {
+    private void checkArraysSize(double[] inputArray, double[] outputArray)
+                                            throws IllegalArgumentException {
+        if (inputArray == null) {
+            throw new IllegalArgumentException(INPUT_ARRAY_IS_NULL_MSG);
+        }
+        if (outputArray == null) {
+            throw new IllegalArgumentException(OUTPUT_ARRAY_IS_NULL_MSG);
+        }
+        if (outputArray.length < inputArray.length) {
+            throw new 
+            IllegalArgumentException(OUTPUT_ARR_IS_SMALLER_THAN_INPUT_ARR_MSG);
+        }
+    }
+    
+    public void mergeSort(double[] inputArray, double[] outputArray) 
+                                            throws IllegalArgumentException {
+        //throws exception if something is wrong;
+        checkArraysSize(inputArray, outputArray);
+        
         try {
             sort(inputArray, 0, inputArray.length - 1, outputArray, 0);
         } catch (InterruptedException ex) {
