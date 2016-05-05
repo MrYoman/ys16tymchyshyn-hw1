@@ -4,8 +4,10 @@ import java.util.concurrent.*;
 
 public class SeriesOfSinCosConcurrent {
     
-    private static final float STEP = 0.0001f;
-
+    private static final String THREADS_COUNT_LESS_THAN_ONE_MSG
+                                = "Threads count can not be less than one.";
+    private static final double STEP = 0.0001;
+    private static final double EPS = 0.000001;
     
     static class SeriesCalculator implements Callable<Double> {
 
@@ -24,14 +26,20 @@ public class SeriesOfSinCosConcurrent {
 
         @Override
         public Double call() throws Exception {
-            for (double x = start; x < finish + STEP; x += STEP) {
+            for (double x = start; x < finish + EPS; x += STEP) {
                 sum += Math.sin(x) * Math.cos(x);
             }
             return sum;
         }
     }
 
-    public Double calculate(double N, int threadsCount) {
+    public Double calculate(double N, int threadsCount) 
+                                            throws IllegalArgumentException {
+        
+        if (threadsCount < 1) {
+            throw new IllegalArgumentException(THREADS_COUNT_LESS_THAN_ONE_MSG);
+        }
+        
         SeriesCalculator[] calculators = new SeriesCalculator[threadsCount];
         ExecutorService executorService 
                 = Executors.newFixedThreadPool(threadsCount);
@@ -41,8 +49,8 @@ public class SeriesOfSinCosConcurrent {
 
         for (int i = 0; i < threadsCount; i++) {
             calculators[i] = new SeriesCalculator(
-                    -N + lengthOfInterval * i * STEP,
-                    -N + lengthOfInterval * (i + 1) * STEP);
+                    -N + lengthOfInterval * i,
+                    -N + lengthOfInterval * (i + 1));
             future[i] = executorService.submit(calculators[i]);
         }
 
