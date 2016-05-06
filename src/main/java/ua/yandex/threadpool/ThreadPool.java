@@ -37,9 +37,16 @@ public class ThreadPool {
                         ex.printStackTrace();
                     }
                 }
-                Runnable task = tasksQueue.dequeue();
-                if (task != null) {
-                    task.run();
+                if (!tasksQueue.isEmpty()) {
+                    Runnable task = null;
+                    synchronized(tasksQueue) {
+                        if (!tasksQueue.isEmpty()) {
+                            task = tasksQueue.dequeue();
+                        }
+                    }
+                    if (task != null) {
+                        task.run();
+                    }
                 }
             }
         }
