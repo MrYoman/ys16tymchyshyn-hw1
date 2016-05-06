@@ -4,6 +4,9 @@ import ua.yandex.Buffer.SimpleBuffer;
 
 public class CircularBufferSynchronized implements SimpleBuffer<Integer> {
 
+    private static final String CAPACITY_LESS_THAN_ZERO_MSG 
+                            = "Capacity of buffer can not be less than zero.";
+    
     private final int capacity;
     private int startOfData;
     private int topOfData;
@@ -13,7 +16,11 @@ public class CircularBufferSynchronized implements SimpleBuffer<Integer> {
 
     private final int[] buffer;
 
-    public CircularBufferSynchronized(int capacity) {
+    public CircularBufferSynchronized(int capacity) 
+                                            throws IllegalArgumentException {
+        if (capacity < 0) {
+            throw new IllegalArgumentException(CAPACITY_LESS_THAN_ZERO_MSG);
+        }
         buffer = new int[capacity];
         this.capacity = capacity;
     }
@@ -53,16 +60,16 @@ public class CircularBufferSynchronized implements SimpleBuffer<Integer> {
 
         full = false;
 
-        topOfData--;
-        if (topOfData < 0) {
-            topOfData = capacity - 1;
+        int elem = buffer[startOfData++];
+        if (startOfData == capacity) {
+            startOfData = 0;
         }
         if (size() == 0) {
             empty = true;
         }
 
         notifyAll();
-        return buffer[topOfData];
+        return elem;
     }
 
     @Override

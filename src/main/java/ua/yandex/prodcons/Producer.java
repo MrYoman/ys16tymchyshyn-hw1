@@ -7,7 +7,7 @@ import ua.yandex.Buffer.*;
 public class Producer implements Runnable {
 
     private final int DATA_COUNT;
-    private final int SLEEP_TIME_MS = 2000;
+    private final int SLEEP_TIME_MS = 500;
     private SimpleBuffer buffer;
     
     public Producer(SimpleBuffer buffer, int dataCount) {
@@ -21,6 +21,7 @@ public class Producer implements Runnable {
         
         for (int i = 0; i < DATA_COUNT; i++) {
             buffer.put(i);
+            System.out.println("Producer put: " + i);
             try {
                 Thread.sleep(rand.nextInt(SLEEP_TIME_MS));
             }

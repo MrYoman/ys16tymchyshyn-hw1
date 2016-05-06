@@ -7,7 +7,7 @@ import ua.yandex.Buffer.*;
 public class Consumer implements Runnable {
 
     private final int DATA_COUNT;
-    private final int SLEEP_TIME_MS = 2000;
+    private final int SLEEP_TIME_MS = 500;
     private SimpleBuffer buffer;
     
     public Consumer(SimpleBuffer buffer, int dataCount) {
@@ -21,6 +21,7 @@ public class Consumer implements Runnable {
         
         for(int i = 0; i < DATA_COUNT; i++) {
             int val = (int) buffer.get();
+            System.out.println("Consumer get: " + val);
             try {
                 Thread.sleep(random.nextInt(SLEEP_TIME_MS));
             } 
