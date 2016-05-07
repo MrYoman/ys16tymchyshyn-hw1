@@ -21,8 +21,10 @@ public class Bank {
 
     public void transfer(Account from, Account to, int amount)
             throws IllegalArgumentException {
-        from.withdraw(amount);
-        to.deposit(amount);
+        while (!from.withdraw(amount)) {
+        }
+        while (!to.deposit(amount)) {
+        }
     }
 
     public synchronized void addAccount(int balance) {
@@ -36,7 +38,7 @@ public class Bank {
 
     public Account getAccountByIndex(int index)
             throws IllegalArgumentException, IndexOutOfBoundsException {
-        if (checkAccountExistenceByIndex(index)) {
+        if (!checkAccountExistenceByIndex(index)) {
             throw new IndexOutOfBoundsException(TOO_BIG_ACCOUNT_INDEX_MSG);
         }
         return accountList.get(index);
@@ -44,13 +46,13 @@ public class Bank {
 
     public long getAccountBalanceByIndex(int index)
             throws IllegalArgumentException, IndexOutOfBoundsException {
-        if (checkAccountExistenceByIndex(index)) {
+        if (!checkAccountExistenceByIndex(index)) {
             throw new IndexOutOfBoundsException(TOO_BIG_ACCOUNT_INDEX_MSG);
         }
         return accountList.get(index).getBalance();
     }
 
-    public long getTotalBalance() {
+    public synchronized long getTotalBalance() {
         long balance = 0;
 
         for (Account account : accountList) {
